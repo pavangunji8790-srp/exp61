@@ -1,4 +1,5 @@
 import express from 'express';
+import { fileURLToPath } from 'url';
 
 const app = express();
 
@@ -83,7 +84,13 @@ app.delete('/products/:id', (req, res) => {
   }
 });
 
-// Start the server
-app.listen(5000, () => {
-  console.log('Server is running at http://localhost:5000');
-});
+const PORT = process.env.PORT || 5000;
+
+const isMain = process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];
+if (!process.env.VERCEL && isMain) {
+  app.listen(PORT, () => {
+    console.log(`Server is running at http://localhost:${PORT}`);
+  });
+}
+
+export default app;
